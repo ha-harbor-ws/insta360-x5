@@ -17,15 +17,13 @@
 
 ## APK
 
-Готовый debug-сборочный файл:
+Скачать (постоянная ссылка latest):  
+https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
 
-`Insta360X5-debug.apk` (в корне репозитория)
-
-Или собрать заново:
+Собрать заново:
 
 ```bat
 cd android
-set JAVA_HOME=C:\Program Files\Microsoft\jdk-17.0.20.101-hotspot
 gradlew.bat assembleDebug
 ```
 
