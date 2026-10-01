@@ -1,10 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Insta360X5" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Insta360X5" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/accent</item>
         <item name="colorPrimaryDark">@color/accent_dark</item>
+        <item name="colorPrimaryVariant">@color/accent_dark</item>
+        <item name="colorSecondary">@color/accent</item>
         <item name="colorAccent">@color/accent</item>
-        <item name="android:statusBarColor">@color/accent_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:colorBackground">@color/bg</item>
         <item name="android:windowBackground">@color/bg</item>
+        <item name="android:statusBarColor">@color/accent_dark</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
+        <item name="colorControlNormal">@color/text_secondary</item>
+        <item name="colorControlActivated">@color/accent</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Insta360X5.ActionBar</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.Insta360X5.Button.Outlined</item>
+        <item name="materialButtonStyle">@style/Widget.Insta360X5.Button</item>
+    </style>
+
+    <style name="ThemeOverlay.Insta360X5.ActionBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+
+    <style name="Widget.Insta360X5.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/accent</item>
+    </style>
+
+    <style name="Widget.Insta360X5.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/accent</item>
+        <item name="strokeColor">@color/accent</item>
+        <item name="rippleColor">@color/accent</item>
+    </style>
+
+    <style name="Widget.Insta360X5.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/accent</item>
+    </style>
+
+    <style name="TextAppearance.Insta360X5.Body" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.Insta360X5.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/text_secondary</item>
     </style>
 </resources>

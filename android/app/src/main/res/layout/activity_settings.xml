@@ -2,105 +2,125 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="480dp"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Host">
+            android:hint="Host"
+            android:textColorHint="@color/text_secondary">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputHost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textColor="@color/text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Port">
+            android:hint="Port"
+            android:textColorHint="@color/text_secondary">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputPort"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number" />
+                android:inputType="number"
+                android:textColor="@color/text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Stitching" />
+            android:text="Stitching"
+            android:textColor="@color/text_primary" />
         <Spinner
             android:id="@+id/spinnerStitch"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:popupBackground="@color/surface" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="HDR" />
+            android:text="HDR"
+            android:textColor="@color/text_primary" />
         <Spinner
             android:id="@+id/spinnerHdr"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:popupBackground="@color/surface" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchDownload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Скачивать после снимка" />
+            android:text="Скачивать после снимка"
+            android:textColor="@color/text_primary" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchDeleteAfter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Удалять после скачивания" />
+            android:text="Удалять после скачивания"
+            android:textColor="@color/text_primary" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchCompress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Сжимать скачанные файлы" />
+            android:text="Сжимать скачанные файлы"
+            android:textColor="@color/text_primary" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Разрешение сжатия" />
+            android:text="Разрешение сжатия"
+            android:textColor="@color/text_primary" />
         <Spinner
             android:id="@+id/spinnerResolution"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:popupBackground="@color/surface" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Качество JPEG" />
+            android:text="Качество JPEG"
+            android:textColor="@color/text_primary" />
         <Spinner
             android:id="@+id/spinnerQuality"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:popupBackground="@color/surface" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switchKeepOriginal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Хранить оригинал" />
+            android:text="Хранить оригинал"
+            android:textColor="@color/text_primary" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
+            style="@style/Widget.Insta360X5.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
