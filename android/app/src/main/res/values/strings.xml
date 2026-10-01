@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Insta360 X5</string>
+    <string name="take_photo">Сделать снимок</string>
+    <string name="camera_info">Информация о камере</string>
+    <string name="files">Файлы на камере</string>
+    <string name="downloaded_photos">Скачанные фото</string>
+    <string name="open_gallery">Открыть галерею</string>
+    <string name="settings">Настройки</string>
+    <string name="working">Выполняется…</string>
+    <string name="download">Скачать</string>
+    <string name="delete">Удалить</string>
+    <string name="refresh">Обновить</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="confirm_delete">Удалить выбранные файлы с камеры?</string>
+    <string name="no_selection">Ничего не выбрано</string>
+    <string name="connect_hint">Подключите телефон к Wi‑Fi камеры (обычно пароль 88888888). IP: 192.168.42.1</string>
+</resources>
