@@ -92,6 +92,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@color/surface"
                 android:fontFamily="monospace"
+                android:gravity="center"
                 android:padding="12dp"
                 android:textColor="@color/text_primary"
                 android:textIsSelectable="true"
