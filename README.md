@@ -61,6 +61,8 @@ python take_photo.py --once --delete-after-download
 
 - **minSdk 26** (Android 8.0) … **targetSdk 36** (Android 16)
 - Готовый APK: [`Insta360X5-debug.apk`](./Insta360X5-debug.apk)
+- Постоянная ссылка (latest):  
+  https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
 
 ### Меню приложения
 
