@@ -3,17 +3,6 @@
 Скрипт `take_photo.py` делает фото через официальный **Insta360 OSC API**  
 (документация: [Insta360Develop/Insta360_OSC](https://github.com/Insta360Develop/Insta360_OSC)).
 
-## Почему OSC, а не RigacciOrg/insta360-wifi-api
-
-| | **Insta360 OSC** | **insta360-wifi-api** |
-|---|---|---|
-| Протокол | HTTP JSON (`/osc/...`) | TCP :6666 + Protobuf |
-| Статус | Официальный, X5 в списке | Reverse‑engineering ONE RS |
-| Зависимости | Только stdlib | Скомпилированные `.pb2` |
-| Скачивание файла | Есть (`fileUrl`) | Только управление |
-
-Для локального снимка с **X5** OSC — правильный и простой путь.
-
 ## Подготовка
 
 1. Активируйте камеру в официальном приложении Insta360 (иначе `unactivated`).
