@@ -80,7 +80,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnOpenGallery"
-        style="@style/Widget.Insta360X5.Button.Text"
+        style="@style/Widget.Insta360X5.Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"

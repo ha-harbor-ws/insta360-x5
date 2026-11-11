@@ -70,7 +70,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCameraInfo"
-            style="@style/Widget.Insta360X5.Button.Outlined"
+            style="@style/Widget.Insta360X5.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -78,7 +78,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnFiles"
-            style="@style/Widget.Insta360X5.Button.Outlined"
+            style="@style/Widget.Insta360X5.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -86,7 +86,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPhotos"
-            style="@style/Widget.Insta360X5.Button.Outlined"
+            style="@style/Widget.Insta360X5.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -94,7 +94,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSettings"
-            style="@style/Widget.Insta360X5.Button.Text"
+            style="@style/Widget.Insta360X5.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

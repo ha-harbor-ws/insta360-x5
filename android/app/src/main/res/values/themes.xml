@@ -19,8 +19,21 @@
         <item name="colorControlNormal">@color/text_secondary</item>
         <item name="colorControlActivated">@color/accent</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Insta360X5.ActionBar</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.Insta360X5.Dialog</item>
         <item name="materialButtonOutlinedStyle">@style/Widget.Insta360X5.Button.Outlined</item>
         <item name="materialButtonStyle">@style/Widget.Insta360X5.Button</item>
+    </style>
+
+    <style name="ThemeOverlay.Insta360X5.Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Insta360X5.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Insta360X5.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.Insta360X5.DialogButton</item>
+    </style>
+
+    <style name="Widget.Insta360X5.DialogButton" parent="Widget.Insta360X5.Button">
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingHorizontal">12dp</item>
     </style>
 
     <style name="ThemeOverlay.Insta360X5.ActionBar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
@@ -31,23 +44,21 @@
     <style name="Widget.Insta360X5.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/accent</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:maxLines">1</item>
+        <item name="rippleColor">@color/accent_dark</item>
     </style>
 
-    <style name="Widget.Insta360X5.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textColor">@color/accent</item>
-        <item name="strokeColor">@color/accent</item>
-        <item name="rippleColor">@color/accent</item>
-    </style>
+    <style name="Widget.Insta360X5.Button.Outlined" parent="Widget.Insta360X5.Button" />
 
-    <style name="Widget.Insta360X5.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/accent</item>
-    </style>
+    <style name="Widget.Insta360X5.Button.Text" parent="Widget.Insta360X5.Button" />
 
-    <style name="Widget.Insta360X5.Button.Round" parent="Widget.MaterialComponents.Button">
-        <item name="android:textColor">@color/white</item>
-        <item name="backgroundTint">@color/accent</item>
+    <style name="Widget.Insta360X5.Button.Round" parent="Widget.Insta360X5.Button">
         <item name="cornerRadius">84dp</item>
         <item name="android:padding">12dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">2</item>
     </style>
 
     <style name="TextAppearance.Insta360X5.Body" parent="TextAppearance.MaterialComponents.Body1">
