@@ -35,6 +35,12 @@ object PhotoStorage {
         return cleaned.ifBlank { "photo" }
     }
 
+    /** Номер колодца из имени файла (без расширения). */
+    fun wellNumberFromFileName(name: String): String {
+        val base = name.substringBeforeLast('.').ifBlank { name }
+        return base.ifBlank { name }
+    }
+
     fun saveFileToGallery(context: Context, source: File, displayName: String): Uri {
         val name = if (displayName.contains('.')) displayName else "$displayName.jpg"
         val mime = when (name.substringAfterLast('.', "jpg").lowercase()) {

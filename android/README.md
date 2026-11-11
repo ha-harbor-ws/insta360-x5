@@ -4,7 +4,7 @@
 
 - **minSdk:** 26 (Android 8.0)
 - **target/compileSdk:** 36 (Android 16)
-- **version:** 1.0.1
+- **version:** 1.0.2
 
 ## Возможности
 
@@ -12,14 +12,15 @@
 2. Сохранение в галерею телефона (`Pictures/Insta360X5`)
 3. Информация о камере (перезапись вывода)
 4. Файлы на камере (скачать / удалить) + галерея
-5. Настройки (host, stitch, HDR, сжатие 1080 по умолчанию)
+5. Просмотр фото: номер колодца из имени файла, «Поделиться»
+6. Настройки (host, stitch, HDR, сжатие 1080 по умолчанию)
 
 ## APK
 
 Скачать (постоянная ссылка latest):  
 https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
 
-Релиз: [v1.0.1](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.1)
+Релиз: [v1.0.2](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.2)
 
 Собрать заново:
 

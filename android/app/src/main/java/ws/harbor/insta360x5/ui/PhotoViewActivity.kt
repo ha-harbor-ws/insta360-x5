@@ -1,11 +1,14 @@
 package ws.harbor.insta360x5.ui
 
+import android.content.ClipData
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import ws.harbor.insta360x5.R
 import ws.harbor.insta360x5.databinding.ActivityPhotoViewBinding
 import ws.harbor.insta360x5.databinding.ItemPhotoPageBinding
 import ws.harbor.insta360x5.util.GalleryPhoto
@@ -20,7 +23,7 @@ class PhotoViewActivity : AppCompatActivity() {
         binding = ActivityPhotoViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        title = "Просмотр"
+        title = getString(R.string.downloaded_photos)
 
         photos = PhotoStorage.listGalleryPhotos(this)
         if (photos.isEmpty()) {
@@ -39,18 +42,35 @@ class PhotoViewActivity : AppCompatActivity() {
 
         binding.photoPager.adapter = PhotoPagerAdapter(photos)
         binding.photoPager.setCurrentItem(startIndex, false)
-        updateTitle(startIndex)
+        updateWellLabel(startIndex)
         binding.photoPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                updateTitle(position)
+                updateWellLabel(position)
             }
         })
+        binding.btnShare.setOnClickListener { shareCurrent() }
     }
 
-    private fun updateTitle(position: Int) {
+    private fun updateWellLabel(position: Int) {
         val photo = photos[position]
-        binding.photoTitle.text = "${position + 1}/${photos.size}  ${photo.name}"
-        title = photo.name
+        val well = PhotoStorage.wellNumberFromFileName(photo.name)
+        binding.photoTitle.text = getString(R.string.well_number_label, well)
+        title = getString(R.string.well_number_label, well)
+    }
+
+    private fun shareCurrent() {
+        val position = binding.photoPager.currentItem
+        if (position !in photos.indices) return
+        val photo = photos[position]
+        val mime = contentResolver.getType(photo.uri) ?: "image/jpeg"
+        val send = Intent(Intent.ACTION_SEND).apply {
+            type = mime
+            putExtra(Intent.EXTRA_STREAM, photo.uri)
+            putExtra(Intent.EXTRA_SUBJECT, PhotoStorage.wellNumberFromFileName(photo.name))
+            clipData = ClipData.newUri(contentResolver, photo.name, photo.uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        startActivity(Intent.createChooser(send, getString(R.string.share)))
     }
 
     override fun onSupportNavigateUp(): Boolean {

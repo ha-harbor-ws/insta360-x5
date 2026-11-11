@@ -17,6 +17,8 @@
     <string name="no_selection">Ничего не выбрано</string>
     <string name="connect_hint">Подключите телефон к Wi‑Fi камеры (обычно пароль 88888888). IP: 192.168.42.1</string>
     <string name="well_number">Номер колодца</string>
+    <string name="well_number_label">Номер колодца: %1$s</string>
     <string name="well_number_required">Введите номер колодца</string>
+    <string name="share">Поделиться</string>
     <string name="ok">OK</string>
 </resources>
