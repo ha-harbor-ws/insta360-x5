@@ -9,4 +9,5 @@
     <color name="text_primary">#FF1A1A1A</color>
     <color name="text_secondary">#FF4A4A4A</color>
     <color name="button_outline">#FF0B6E4F</color>
+    <color name="overlay_blue">#FF1565C0</color>
 </resources>

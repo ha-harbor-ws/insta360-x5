@@ -4,18 +4,22 @@ import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import ws.harbor.insta360x5.R
+import ws.harbor.insta360x5.data.AppSettings
 import ws.harbor.insta360x5.databinding.ActivityPhotoViewBinding
 import ws.harbor.insta360x5.databinding.ItemPhotoPageBinding
 import ws.harbor.insta360x5.util.GalleryPhoto
+import ws.harbor.insta360x5.util.PhotoOverlay
 import ws.harbor.insta360x5.util.PhotoStorage
 
 class PhotoViewActivity : BaseActivity() {
     private lateinit var binding: ActivityPhotoViewBinding
     private lateinit var photos: List<GalleryPhoto>
+    private var softOverlayEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +27,10 @@ class PhotoViewActivity : BaseActivity() {
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = getString(R.string.downloaded_photos)
+
+        // Вариант 3: при выключенной печати — только мягкий оверлей в просмотре
+        softOverlayEnabled = !AppSettings.load(this).printOverlay
+        binding.softOverlay.visibility = if (softOverlayEnabled) View.VISIBLE else View.GONE
 
         photos = PhotoStorage.listGalleryPhotos(this)
         if (photos.isEmpty()) {
@@ -41,20 +49,24 @@ class PhotoViewActivity : BaseActivity() {
 
         binding.photoPager.adapter = PhotoPagerAdapter(photos)
         binding.photoPager.setCurrentItem(startIndex, false)
-        updateWellLabel(startIndex)
+        updateLabels(startIndex)
         binding.photoPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                updateWellLabel(position)
+                updateLabels(position)
             }
         })
         binding.btnShare.setOnClickListener { shareCurrent() }
     }
 
-    private fun updateWellLabel(position: Int) {
+    private fun updateLabels(position: Int) {
         val photo = photos[position]
         val well = PhotoStorage.wellNumberFromFileName(photo.name)
         binding.photoTitle.text = getString(R.string.well_number_label, well)
         title = getString(R.string.well_number_label, well)
+        if (softOverlayEnabled) {
+            binding.overlayWell.text = well
+            binding.overlayDate.text = PhotoOverlay.formatDateTime(photo.dateAdded * 1000L)
+        }
     }
 
     private fun shareCurrent() {

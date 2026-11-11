@@ -139,6 +139,15 @@
             android:text="Хранить оригинал"
             android:textColor="@color/text_primary" />
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchPrintOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:checked="true"
+            android:text="@string/print_overlay"
+            android:textColor="@color/text_primary" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
             style="@style/Widget.Insta360X5.Button"

@@ -18,6 +18,7 @@ import ws.harbor.insta360x5.databinding.DialogWellNumberBinding
 import ws.harbor.insta360x5.osc.OscClient
 import ws.harbor.insta360x5.osc.OscException
 import ws.harbor.insta360x5.util.ImageCompressor
+import ws.harbor.insta360x5.util.PhotoOverlay
 import ws.harbor.insta360x5.util.PhotoStorage
 import java.io.File
 import java.text.SimpleDateFormat
@@ -129,7 +130,15 @@ class MainActivity : BaseActivity() {
                             }
                             val temp = File(PhotoStorage.cacheDir(this@MainActivity), cacheName)
                             cam.downloadToFile(url, temp)
-                            val processed = ImageCompressor.maybeCompress(temp, settings)
+                            var processed = ImageCompressor.maybeCompress(temp, settings)
+                            if (settings.printOverlay) {
+                                processed = PhotoOverlay.burnIntoFile(
+                                    processed,
+                                    wellName,
+                                    PhotoOverlay.formatDateTime(),
+                                    settings.compressQuality,
+                                )
+                            }
                             val galleryName = if (processed.extension.isBlank()) {
                                 "$wellName.jpg"
                             } else if (urls.size == 1) {

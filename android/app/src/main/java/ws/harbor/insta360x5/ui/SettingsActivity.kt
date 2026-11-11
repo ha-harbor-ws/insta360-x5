@@ -56,6 +56,7 @@ class SettingsActivity : BaseActivity() {
         binding.switchDeleteAfter.isChecked = settings.deleteAfterDownload
         binding.switchCompress.isChecked = settings.compress
         binding.switchKeepOriginal.isChecked = settings.compressKeepOriginal
+        binding.switchPrintOverlay.isChecked = settings.printOverlay
 
         binding.btnSave.setOnClickListener { save() }
     }
@@ -81,6 +82,7 @@ class SettingsActivity : BaseActivity() {
         settings.compressResolution = binding.spinnerResolution.selectedItem as String
         settings.compressQuality = (binding.spinnerQuality.selectedItem as String).toInt()
         settings.compressKeepOriginal = binding.switchKeepOriginal.isChecked
+        settings.printOverlay = binding.switchPrintOverlay.isChecked
         AppSettings.save(this, settings)
         Toast.makeText(this, "Сохранено", Toast.LENGTH_SHORT).show()
         finish()

@@ -14,6 +14,8 @@ data class AppSettings(
     var compressResolution: String = "1080",
     var compressQuality: Int = 85,
     var compressKeepOriginal: Boolean = false,
+    /** Печатать номер колодца и дату на фото (вшить в файл). По умолчанию включено. */
+    var printOverlay: Boolean = true,
 ) {
     fun summary(): String {
         val compressLabel = if (compress) {
@@ -22,7 +24,8 @@ data class AppSettings(
             "off"
         }
         return "stitch=$stitch | hdr=$hdr | download=${onOff(download)} | " +
-            "del-after=${onOff(deleteAfterDownload)} | compress=$compressLabel"
+            "del-after=${onOff(deleteAfterDownload)} | compress=$compressLabel | " +
+            "print=${onOff(printOverlay)}"
     }
 
     private fun onOff(value: Boolean) = if (value) "on" else "off"
@@ -56,6 +59,7 @@ data class AppSettings(
                 compressResolution = p.getString("compressResolution", "1080") ?: "1080",
                 compressQuality = p.getInt("compressQuality", 85),
                 compressKeepOriginal = p.getBoolean("compressKeepOriginal", false),
+                printOverlay = p.getBoolean("printOverlay", true),
             )
         }
 
@@ -71,6 +75,7 @@ data class AppSettings(
                 .putString("compressResolution", settings.compressResolution)
                 .putInt("compressQuality", settings.compressQuality)
                 .putBoolean("compressKeepOriginal", settings.compressKeepOriginal)
+                .putBoolean("printOverlay", settings.printOverlay)
                 .apply()
         }
     }

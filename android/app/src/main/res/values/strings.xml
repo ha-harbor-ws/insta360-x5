@@ -20,5 +20,6 @@
     <string name="well_number_label">Номер колодца: %1$s</string>
     <string name="well_number_required">Введите номер колодца</string>
     <string name="share">Поделиться</string>
+    <string name="print_overlay">Печатать номер и дату на фото</string>
     <string name="ok">OK</string>
 </resources>

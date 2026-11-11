@@ -21,6 +21,7 @@ import ws.harbor.insta360x5.databinding.ItemFileBinding
 import ws.harbor.insta360x5.osc.CameraFile
 import ws.harbor.insta360x5.osc.OscClient
 import ws.harbor.insta360x5.util.ImageCompressor
+import ws.harbor.insta360x5.util.PhotoOverlay
 import ws.harbor.insta360x5.util.PhotoStorage
 import java.io.File
 
@@ -97,7 +98,16 @@ class FilesActivity : BaseActivity() {
                     for (file in selected) {
                         val temp = File(PhotoStorage.cacheDir(this@FilesActivity), file.name)
                         cam.downloadToFile(file.fileUrl, temp)
-                        val processed = ImageCompressor.maybeCompress(temp, settings)
+                        var processed = ImageCompressor.maybeCompress(temp, settings)
+                        if (settings.printOverlay) {
+                            val well = PhotoStorage.wellNumberFromFileName(processed.name)
+                            processed = PhotoOverlay.burnIntoFile(
+                                processed,
+                                well,
+                                PhotoOverlay.formatDateTime(temp.lastModified().takeIf { it > 0 } ?: System.currentTimeMillis()),
+                                settings.compressQuality,
+                            )
+                        }
                         val uri = PhotoStorage.saveFileToGallery(
                             this@FilesActivity,
                             processed,
