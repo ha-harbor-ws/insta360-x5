@@ -5,6 +5,9 @@
 В репозитории:
 - **`take_photo.py`** — CLI / интерактивное меню для ПК
 - **`android/`** — приложение для телефона (APK)
+- **`CHANGELOG.md`** — история изменений
+
+**Актуальный релиз:** [v1.0.1](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.1)
 
 IP камеры в режиме AP: **`192.168.42.1`** (пароль Wi‑Fi обычно `88888888`).
 
@@ -51,7 +54,7 @@ python take_photo.py --once   # один снимок и выход
 
 ```bash
 python take_photo.py --once --stitch ondevice --hdr off --out ./photos
-python take_photo.py --once --compress --compress-res 4k --compress-quality 85
+python take_photo.py --once --compress --compress-res 1080 --compress-quality 85
 python take_photo.py --once --delete-after-download
 ```
 
@@ -60,21 +63,23 @@ python take_photo.py --once --delete-after-download
 ## Android
 
 - **minSdk 26** (Android 8.0) … **targetSdk 36** (Android 16)
+- Версия приложения: **1.0.1**
 
-**Скачать APK** (через Releases, не из дерева файлов):  
+**Скачать APK (latest):**  
 https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
 
-Страница релиза: https://github.com/ha-harbor-ws/insta360-x5/releases/latest
+Страница релизов: https://github.com/ha-harbor-ws/insta360-x5/releases/latest
 
 ### Меню приложения
 
-1. **Сделать снимок**
-2. **Информация о камере**
-3. **Файлы на камере** — список, скачать, удалить, кнопка «Открыть галерею»
-4. **Скачанные фото** — сетка и полноэкранный просмотр (свайп)
-5. **Настройки** — host, stitch, HDR, скачивание, удаление после скачивания, сжатие
+1. **Сделать снимок** — большая круглая кнопка; запрос «Номер колодца» → имя файла; сохранение в галерею телефона (`Pictures/Insta360X5`)
+2. **Информация о камере** — вывод перезаписывается при каждом запросе
+3. **Файлы на камере** — список, скачать в галерею, удалить, открыть галерею приложения
+4. **Скачанные фото** — сетка и полноэкранный просмотр из галереи
+5. **Настройки** — host, stitch, HDR, скачивание, удаление после скачивания, сжатие  
+   Под кнопкой показывается сводка текущих настроек
 
-После скачивания (снимок или файлы с камеры) предлагается открыть галерею.
+По умолчанию сжатие: разрешение **1080**.
 
 ### Сборка
 
@@ -86,6 +91,21 @@ gradlew.bat assembleDebug
 APK: `android/app/build/outputs/apk/debug/app-debug.apk`
 
 Подробнее: [android/README.md](./android/README.md)
+
+---
+
+## Changelog
+
+Полный список изменений: [CHANGELOG.md](./CHANGELOG.md)
+
+### 1.0.1
+- Круглая кнопка снимка, имя файла = номер колодца
+- Сохранение в системную галерею
+- Настройки под пунктом меню, overwrite лога инфо
+- Default compress 1080
+
+### 1.0.0
+- Первая публикация Android + Python OSC remote
 
 ---
 
