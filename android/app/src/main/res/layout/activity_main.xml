@@ -12,8 +12,48 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="24dp"
-        android:paddingTop="36dp"
+        android:paddingTop="12dp"
         android:paddingBottom="24dp">
+
+        <TextView
+            android:id="@+id/statusLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/connect_hint"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/modeLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/logView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/surface"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:padding="12dp"
+            android:textColor="@color/text_primary"
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTakePhoto"
@@ -59,46 +99,5 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/settings" />
-
-        <TextView
-            android:id="@+id/statusLine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center"
-            android:text="@string/connect_hint"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/modeLine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp" />
-
-        <ProgressBar
-            android:id="@+id/progress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:indeterminate="true"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/logView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/surface"
-            android:fontFamily="monospace"
-            android:gravity="center"
-            android:padding="12dp"
-            android:textColor="@color/text_primary"
-            android:textIsSelectable="true"
-            android:textSize="12sp" />
     </LinearLayout>
 </ScrollView>
