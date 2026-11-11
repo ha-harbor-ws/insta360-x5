@@ -7,7 +7,7 @@
 - **`android/`** — приложение для телефона (APK)
 - **`CHANGELOG.md`** — история изменений
 
-**Актуальный релиз:** [v1.0.8](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.8)
+**Актуальный релиз:** [v1.0.9](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.9)
 
 IP камеры в режиме AP: **`192.168.42.1`**. Имя точки доступа и пароль Wi‑Fi — в настройках камеры.
 
@@ -63,7 +63,7 @@ python take_photo.py --once --delete-after-download
 ## Android
 
 - **minSdk 26** (Android 8.0) … **targetSdk 36** (Android 16)
-- Версия приложения: **1.0.8**
+- Версия приложения: **1.0.9**
 
 **Скачать APK (latest):**  
 https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
@@ -98,6 +98,9 @@ APK: `android/app/build/outputs/apk/debug/app-debug.apk`
 ## Changelog
 
 Полный список изменений: [CHANGELOG.md](./CHANGELOG.md)
+
+### 1.0.9
+- Диалог «Номер колодца»: круглая кнопка «Сделать снимок» вместо OK/Отмена
 
 ### 1.0.8
 - Все кнопки приложения — зелёный фон, белый шрифт

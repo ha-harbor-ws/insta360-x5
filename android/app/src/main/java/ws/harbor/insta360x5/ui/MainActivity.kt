@@ -73,22 +73,28 @@ class MainActivity : BaseActivity() {
         val dialogBinding = DialogWellNumberBinding.inflate(LayoutInflater.from(this))
         val dialog = AlertDialog.Builder(this)
             .setView(dialogBinding.root)
-            .setPositiveButton(R.string.ok, null)
-            .setNegativeButton(R.string.cancel, null)
             .create()
+
+        fun confirmAndCapture() {
+            val raw = dialogBinding.inputWellNumber.text?.toString().orEmpty()
+            val base = PhotoStorage.sanitizeFileBase(raw)
+            if (raw.isBlank()) {
+                dialogBinding.inputWellNumber.error = getString(R.string.well_number_required)
+                return
+            }
+            dialog.dismiss()
+            takePhoto(base)
+        }
+
+        dialogBinding.btnDialogTakePhoto.setOnClickListener { confirmAndCapture() }
+        dialogBinding.inputWellNumber.setOnEditorActionListener { _, _, _ ->
+            confirmAndCapture()
+            true
+        }
 
         dialog.setOnShowListener {
             (dialogBinding.root.parent as? View)?.setPadding(0, 0, 0, 0)
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val raw = dialogBinding.inputWellNumber.text?.toString().orEmpty()
-                val base = PhotoStorage.sanitizeFileBase(raw)
-                if (raw.isBlank()) {
-                    dialogBinding.inputWellNumber.error = getString(R.string.well_number_required)
-                    return@setOnClickListener
-                }
-                dialog.dismiss()
-                takePhoto(base)
-            }
+            dialogBinding.inputWellNumber.requestFocus()
         }
         dialog.show()
     }

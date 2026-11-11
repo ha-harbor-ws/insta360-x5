@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <TextView
@@ -28,8 +30,24 @@
             android:id="@+id/inputWellNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
             android:textColor="@color/text_primary" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDialogTakePhoto"
+        style="@style/Widget.Insta360X5.Button.Round"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="20dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/take_photo"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        app:cornerRadius="70dp" />
 </LinearLayout>
