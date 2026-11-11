@@ -72,13 +72,13 @@ class MainActivity : BaseActivity() {
     private fun askWellNumberAndCapture() {
         val dialogBinding = DialogWellNumberBinding.inflate(LayoutInflater.from(this))
         val dialog = AlertDialog.Builder(this)
-            .setTitle(R.string.well_number)
             .setView(dialogBinding.root)
             .setPositiveButton(R.string.ok, null)
             .setNegativeButton(R.string.cancel, null)
             .create()
 
         dialog.setOnShowListener {
+            (dialogBinding.root.parent as? View)?.setPadding(0, 0, 0, 0)
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val raw = dialogBinding.inputWellNumber.text?.toString().orEmpty()
                 val base = PhotoStorage.sanitizeFileBase(raw)
