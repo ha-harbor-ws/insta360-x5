@@ -15,7 +15,7 @@
     <string name="cancel">Отмена</string>
     <string name="confirm_delete">Удалить выбранные файлы с камеры?</string>
     <string name="no_selection">Ничего не выбрано</string>
-    <string name="connect_hint">Подключите телефон к Wi‑Fi камеры (обычно пароль 88888888). IP: 192.168.42.1</string>
+    <string name="connect_hint">Подключите телефон к Wi‑Fi камеры. Имя точки доступа и пароль Wi‑Fi смотрите в настройках камеры. IP: 192.168.42.1</string>
     <string name="well_number">Номер колодца</string>
     <string name="well_number_label">Номер колодца: %1$s</string>
     <string name="well_number_required">Введите номер колодца</string>

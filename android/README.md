@@ -4,7 +4,7 @@
 
 - **minSdk:** 26 (Android 8.0)
 - **target/compileSdk:** 36 (Android 16)
-- **version:** 1.0.5
+- **version:** 1.0.6
 
 ## Возможности
 
@@ -20,7 +20,7 @@
 Скачать (постоянная ссылка latest):  
 https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
 
-Релиз: [v1.0.5](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.5)
+Релиз: [v1.0.6](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.6)
 
 Собрать заново:
 
@@ -33,6 +33,6 @@ APK: `android/app/build/outputs/apk/debug/app-debug.apk`
 
 ## Использование
 
-1. Подключите телефон к Wi‑Fi камеры Insta360 (пароль обычно `88888888`).
+1. Подключите телефон к Wi‑Fi камеры Insta360 (имя точки доступа и пароль — в настройках камеры).
 2. Установите APK (разрешите установку из неизвестных источников).
 3. Откройте приложение и работайте с меню.

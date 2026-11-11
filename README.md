@@ -7,9 +7,9 @@
 - **`android/`** — приложение для телефона (APK)
 - **`CHANGELOG.md`** — история изменений
 
-**Актуальный релиз:** [v1.0.5](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.5)
+**Актуальный релиз:** [v1.0.6](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.6)
 
-IP камеры в режиме AP: **`192.168.42.1`** (пароль Wi‑Fi обычно `88888888`).
+IP камеры в режиме AP: **`192.168.42.1`**. Имя точки доступа и пароль Wi‑Fi — в настройках камеры.
 
 ---
 
@@ -63,7 +63,7 @@ python take_photo.py --once --delete-after-download
 ## Android
 
 - **minSdk 26** (Android 8.0) … **targetSdk 36** (Android 16)
-- Версия приложения: **1.0.5**
+- Версия приложения: **1.0.6**
 
 **Скачать APK (latest):**  
 https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
@@ -98,6 +98,9 @@ APK: `android/app/build/outputs/apk/debug/app-debug.apk`
 ## Changelog
 
 Полный список изменений: [CHANGELOG.md](./CHANGELOG.md)
+
+### 1.0.6
+- Подсказка: имя AP и пароль Wi‑Fi — в настройках камеры
 
 ### 1.0.5
 - Исправлено перекрытие кнопок/подсказок ActionBar на Android 15+
