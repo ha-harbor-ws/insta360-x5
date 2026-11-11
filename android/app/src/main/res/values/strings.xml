@@ -21,5 +21,15 @@
     <string name="well_number_required">Введите номер колодца</string>
     <string name="share">Поделиться</string>
     <string name="print_overlay">Печатать номер и дату на фото</string>
+    <string name="wifi_ssid">Wi‑Fi SSID</string>
+    <string name="wifi_password">Wi‑Fi пароль</string>
+    <string name="wifi_connect_title">Wi‑Fi камеры</string>
+    <string name="camera_connect">Камера коннект</string>
+    <string name="wifi_ssid_required">Введите SSID</string>
+    <string name="wifi_password_required">Введите пароль Wi‑Fi</string>
+    <string name="wifi_status_disconnected">Камера Wi‑Fi: нет</string>
+    <string name="wifi_status_connecting">Камера Wi‑Fi: подключение…</string>
+    <string name="wifi_status_connected">Камера Wi‑Fi: подключено</string>
+    <string name="wifi_credentials_verify_fail">Не удалось подключиться с новыми SSID/паролем. Wi‑Fi настройки не сохранены.</string>
     <string name="ok">OK</string>
 </resources>

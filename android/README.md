@@ -2,9 +2,9 @@
 
 Приложение для телефона с OSC-функционалом `take_photo.py`.
 
-- **minSdk:** 26 (Android 8.0)
+- **minSdk:** 29 (Android 10)
 - **target/compileSdk:** 36 (Android 16)
-- **version:** 1.1.0
+- **version:** 1.2.0
 
 ## Возможности
 
@@ -13,14 +13,15 @@
 3. Информация о камере (перезапись вывода)
 4. Файлы на камере (скачать / удалить) + галерея
 5. Просмотр фото: номер колодца из имени файла, «Поделиться»
-6. Настройки (host, stitch, HDR, сжатие 1080, печать на фото — вкл. по умолчанию)
+6. Wi‑Fi SSID/пароль + «Камера коннект» (OSC через AP камеры, интернет — LTE)
+7. Настройки (сжатие 1080, печать на фото — вкл. по умолчанию)
 
 ## APK
 
 Скачать (постоянная ссылка latest):  
 https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
 
-Релиз: [v1.1.0](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.1.0)
+Релиз: [v1.2.0](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.2.0)
 
 Собрать заново:
 

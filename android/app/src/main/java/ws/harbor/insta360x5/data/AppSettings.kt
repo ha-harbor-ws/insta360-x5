@@ -1,9 +1,10 @@
 package ws.harbor.insta360x5.data
 
 import android.content.Context
-import android.content.SharedPreferences
 
 data class AppSettings(
+    var wifiSsid: String = "",
+    var wifiPassword: String = "",
     var host: String = "192.168.42.1",
     var port: Int = 80,
     var stitch: String = "ondevice",
@@ -17,13 +18,16 @@ data class AppSettings(
     /** Печатать номер колодца и дату на фото (вшить в файл). По умолчанию включено. */
     var printOverlay: Boolean = true,
 ) {
+    fun hasWifiCredentials(): Boolean = wifiSsid.isNotBlank() && wifiPassword.isNotBlank()
+
     fun summary(): String {
         val compressLabel = if (compress) {
             "$compressResolution/q$compressQuality"
         } else {
             "off"
         }
-        return "stitch=$stitch | hdr=$hdr | download=${onOff(download)} | " +
+        val wifi = if (wifiSsid.isBlank()) "ssid=—" else "ssid=$wifiSsid"
+        return "$wifi | stitch=$stitch | hdr=$hdr | download=${onOff(download)} | " +
             "del-after=${onOff(deleteAfterDownload)} | compress=$compressLabel | " +
             "print=${onOff(printOverlay)}"
     }
@@ -49,6 +53,8 @@ data class AppSettings(
         fun load(context: Context): AppSettings {
             val p = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             return AppSettings(
+                wifiSsid = p.getString("wifiSsid", "") ?: "",
+                wifiPassword = p.getString("wifiPassword", "") ?: "",
                 host = p.getString("host", "192.168.42.1") ?: "192.168.42.1",
                 port = p.getInt("port", 80),
                 stitch = p.getString("stitch", "ondevice") ?: "ondevice",
@@ -65,6 +71,8 @@ data class AppSettings(
 
         fun save(context: Context, settings: AppSettings) {
             context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+                .putString("wifiSsid", settings.wifiSsid)
+                .putString("wifiPassword", settings.wifiPassword)
                 .putString("host", settings.host)
                 .putInt("port", settings.port)
                 .putString("stitch", settings.stitch)
@@ -77,6 +85,14 @@ data class AppSettings(
                 .putBoolean("compressKeepOriginal", settings.compressKeepOriginal)
                 .putBoolean("printOverlay", settings.printOverlay)
                 .apply()
+        }
+
+        /** Сохранить всё, кроме Wi‑Fi (SSID/пароль остаются прежними в prefs). */
+        fun saveWithoutWifi(context: Context, settings: AppSettings) {
+            val current = load(context)
+            settings.wifiSsid = current.wifiSsid
+            settings.wifiPassword = current.wifiPassword
+            save(context, settings)
         }
     }
 }

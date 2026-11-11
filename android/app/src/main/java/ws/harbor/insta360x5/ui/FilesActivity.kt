@@ -19,10 +19,11 @@ import ws.harbor.insta360x5.data.AppSettings
 import ws.harbor.insta360x5.databinding.ActivityFilesBinding
 import ws.harbor.insta360x5.databinding.ItemFileBinding
 import ws.harbor.insta360x5.osc.CameraFile
-import ws.harbor.insta360x5.osc.OscClient
 import ws.harbor.insta360x5.util.ImageCompressor
 import ws.harbor.insta360x5.util.PhotoOverlay
 import ws.harbor.insta360x5.util.PhotoStorage
+import ws.harbor.insta360x5.wifi.CameraWifiSession
+import ws.harbor.insta360x5.wifi.createOscClient
 import java.io.File
 
 class FilesActivity : BaseActivity() {
@@ -55,7 +56,7 @@ class FilesActivity : BaseActivity() {
         return true
     }
 
-    private fun client() = OscClient(settings.host, settings.port)
+    private fun client() = settings.createOscClient()
 
     private fun setBusy(busy: Boolean) {
         binding.progress.visibility = if (busy) View.VISIBLE else View.GONE
@@ -66,6 +67,10 @@ class FilesActivity : BaseActivity() {
     }
 
     private fun refresh() {
+        if (!CameraWifiSession.isConnected) {
+            Toast.makeText(this, R.string.wifi_status_disconnected, Toast.LENGTH_LONG).show()
+            return
+        }
         setBusy(true)
         lifecycleScope.launch {
             try {
@@ -83,6 +88,10 @@ class FilesActivity : BaseActivity() {
     }
 
     private fun downloadSelected() {
+        if (!CameraWifiSession.isConnected) {
+            Toast.makeText(this, R.string.wifi_status_disconnected, Toast.LENGTH_LONG).show()
+            return
+        }
         val selected = adapter.selected()
         if (selected.isEmpty()) {
             Toast.makeText(this, R.string.no_selection, Toast.LENGTH_SHORT).show()

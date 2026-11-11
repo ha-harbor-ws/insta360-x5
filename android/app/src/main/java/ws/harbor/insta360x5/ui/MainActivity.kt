@@ -15,11 +15,15 @@ import ws.harbor.insta360x5.R
 import ws.harbor.insta360x5.data.AppSettings
 import ws.harbor.insta360x5.databinding.ActivityMainBinding
 import ws.harbor.insta360x5.databinding.DialogWellNumberBinding
-import ws.harbor.insta360x5.osc.OscClient
+import ws.harbor.insta360x5.databinding.DialogWifiConnectBinding
 import ws.harbor.insta360x5.osc.OscException
 import ws.harbor.insta360x5.util.ImageCompressor
 import ws.harbor.insta360x5.util.PhotoOverlay
 import ws.harbor.insta360x5.util.PhotoStorage
+import ws.harbor.insta360x5.wifi.CameraWifiSession
+import ws.harbor.insta360x5.wifi.CameraWifiStatus
+import ws.harbor.insta360x5.wifi.connectAndProbeCamera
+import ws.harbor.insta360x5.wifi.createOscClient
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -28,6 +32,8 @@ import java.util.Locale
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var settings: AppSettings
+    private var wifiDialogShown = false
+    private var autoConnectAttempted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +41,7 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
         title = "Insta360 X5"
 
+        binding.btnCameraConnect.setOnClickListener { connectCameraFromSettings() }
         binding.btnTakePhoto.setOnClickListener { askWellNumberAndCapture() }
         binding.btnCameraInfo.setOnClickListener { showInfo() }
         binding.btnFiles.setOnClickListener {
@@ -52,10 +59,32 @@ class MainActivity : BaseActivity() {
         super.onResume()
         settings = AppSettings.load(this)
         binding.modeLine.text = settings.summary()
+        refreshWifiStatus()
+
+        if (!settings.hasWifiCredentials()) {
+            if (!wifiDialogShown) {
+                wifiDialogShown = true
+                showWifiSetupDialog()
+            }
+        } else if (!CameraWifiSession.isConnected && !autoConnectAttempted) {
+            // Уже есть SSID/пароль — тихо подключаемся в фоне, диалог не показываем
+            autoConnectAttempted = true
+            connectCameraFromSettings(silentFail = true)
+        }
+    }
+
+    private fun refreshWifiStatus() {
+        binding.wifiStatusLine.text = when (CameraWifiSession.status) {
+            CameraWifiStatus.Disconnected -> getString(R.string.wifi_status_disconnected)
+            CameraWifiStatus.Connecting -> getString(R.string.wifi_status_connecting)
+            CameraWifiStatus.Connected -> getString(R.string.wifi_status_connected)
+            CameraWifiStatus.Lost -> getString(R.string.wifi_status_disconnected)
+        }
     }
 
     private fun setBusy(busy: Boolean) {
         binding.progress.visibility = if (busy) View.VISIBLE else View.GONE
+        binding.btnCameraConnect.isEnabled = !busy
         binding.btnTakePhoto.isEnabled = !busy
         binding.btnCameraInfo.isEnabled = !busy
         binding.btnFiles.isEnabled = !busy
@@ -68,9 +97,107 @@ class MainActivity : BaseActivity() {
         binding.logView.text = "[$stamp] $text"
     }
 
-    private fun client() = OscClient(settings.host, settings.port)
+    private fun client() = settings.createOscClient()
+
+    private fun showWifiSetupDialog() {
+        val dialogBinding = DialogWifiConnectBinding.inflate(LayoutInflater.from(this))
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .setCancelable(true)
+            .create()
+
+        dialogBinding.btnCameraConnect.setOnClickListener {
+            val ssid = dialogBinding.inputWifiSsid.text?.toString()?.trim().orEmpty()
+            val password = dialogBinding.inputWifiPassword.text?.toString().orEmpty()
+            if (ssid.isBlank()) {
+                dialogBinding.inputWifiSsid.error = getString(R.string.wifi_ssid_required)
+                return@setOnClickListener
+            }
+            if (password.isBlank()) {
+                dialogBinding.inputWifiPassword.error = getString(R.string.wifi_password_required)
+                return@setOnClickListener
+            }
+
+            dialogBinding.btnCameraConnect.isEnabled = false
+            setBusy(true)
+            refreshWifiStatus()
+            setLog("Подключение к Wi‑Fi «$ssid»…")
+            lifecycleScope.launch {
+                try {
+                    val result = withContext(Dispatchers.IO) {
+                        connectAndProbeCamera(
+                            this@MainActivity,
+                            ssid,
+                            password,
+                            settings.host,
+                            settings.port,
+                        )
+                    }
+                    settings.wifiSsid = ssid
+                    settings.wifiPassword = password
+                    AppSettings.save(this@MainActivity, settings)
+                    binding.modeLine.text = settings.summary()
+                    refreshWifiStatus()
+                    setLog(result.infoText)
+                    Toast.makeText(this@MainActivity, R.string.wifi_status_connected, Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                } catch (e: Exception) {
+                    refreshWifiStatus()
+                    setLog("Ошибка Wi‑Fi: ${e.message}")
+                    Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
+                    dialogBinding.btnCameraConnect.isEnabled = true
+                } finally {
+                    setBusy(false)
+                }
+            }
+        }
+
+        dialog.setOnShowListener {
+            (dialogBinding.root.parent as? View)?.setPadding(0, 0, 0, 0)
+        }
+        dialog.setOnDismissListener { wifiDialogShown = false }
+        dialog.show()
+    }
+
+    private fun connectCameraFromSettings(silentFail: Boolean = false) {
+        settings = AppSettings.load(this)
+        if (!settings.hasWifiCredentials()) {
+            showWifiSetupDialog()
+            return
+        }
+        setBusy(true)
+        refreshWifiStatus()
+        setLog("Подключение к Wi‑Fi «${settings.wifiSsid}»…")
+        lifecycleScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    connectAndProbeCamera(
+                        this@MainActivity,
+                        settings.wifiSsid,
+                        settings.wifiPassword,
+                        settings.host,
+                        settings.port,
+                    )
+                }
+                refreshWifiStatus()
+                setLog(result.infoText)
+                if (!silentFail) {
+                    Toast.makeText(this@MainActivity, R.string.wifi_status_connected, Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                refreshWifiStatus()
+                setLog("Ошибка Wi‑Fi: ${e.message}")
+                if (!silentFail) {
+                    Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
+                }
+            } finally {
+                setBusy(false)
+            }
+        }
+    }
 
     private fun askWellNumberAndCapture() {
+        if (!ensureCameraWifi()) return
         val dialogBinding = DialogWellNumberBinding.inflate(LayoutInflater.from(this))
         val dialog = AlertDialog.Builder(this)
             .setView(dialogBinding.root)
@@ -100,7 +227,19 @@ class MainActivity : BaseActivity() {
         dialog.show()
     }
 
+    private fun ensureCameraWifi(): Boolean {
+        if (CameraWifiSession.isConnected) return true
+        Toast.makeText(this, R.string.wifi_status_disconnected, Toast.LENGTH_LONG).show()
+        if (!settings.hasWifiCredentials()) {
+            showWifiSetupDialog()
+        } else {
+            connectCameraFromSettings()
+        }
+        return false
+    }
+
     private fun takePhoto(wellName: String) {
+        if (!ensureCameraWifi()) return
         setBusy(true)
         setLog("Снимок… колодец=$wellName")
         lifecycleScope.launch {
@@ -192,6 +331,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showInfo() {
+        if (!ensureCameraWifi()) return
         setBusy(true)
         lifecycleScope.launch {
             try {
@@ -201,6 +341,7 @@ class MainActivity : BaseActivity() {
                     val state = cam.state().optJSONObject("state")
                     buildString {
                         appendLine("URL: http://${settings.host}:${settings.port}")
+                        appendLine("Wi‑Fi: ${settings.wifiSsid}")
                         appendLine("Модель: ${info.optString("model")}")
                         appendLine("Прошивка: ${info.optString("firmwareVersion")}")
                         appendLine("S/N: ${info.optString("serialNumber")}")

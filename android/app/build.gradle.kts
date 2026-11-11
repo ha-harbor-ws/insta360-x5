@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId = "ws.harbor.insta360x5"
-        minSdk = 26
+        minSdk = 29
         targetSdk = 36
-        versionCode = 11
-        versionName = "1.1.0"
+        versionCode = 12
+        versionName = "1.2.0"
     }
 
     buildTypes {

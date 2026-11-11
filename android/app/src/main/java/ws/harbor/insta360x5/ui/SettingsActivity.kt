@@ -3,12 +3,20 @@ package ws.harbor.insta360x5.ui
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ws.harbor.insta360x5.R
 import ws.harbor.insta360x5.data.AppSettings
 import ws.harbor.insta360x5.databinding.ActivitySettingsBinding
+import ws.harbor.insta360x5.wifi.connectAndProbeCamera
 
 class SettingsActivity : BaseActivity() {
     private lateinit var binding: ActivitySettingsBinding
     private lateinit var settings: AppSettings
+    private lateinit var originalSsid: String
+    private lateinit var originalPassword: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +26,11 @@ class SettingsActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         settings = AppSettings.load(this)
+        originalSsid = settings.wifiSsid
+        originalPassword = settings.wifiPassword
+
+        binding.inputWifiSsid.setText(settings.wifiSsid)
+        binding.inputWifiPassword.setText(settings.wifiPassword)
         binding.inputHost.setText(settings.host)
         binding.inputPort.setText(settings.port.toString())
 
@@ -72,6 +85,11 @@ class SettingsActivity : BaseActivity() {
             Toast.makeText(this, "Неверный порт", Toast.LENGTH_SHORT).show()
             return
         }
+
+        val newSsid = binding.inputWifiSsid.text?.toString()?.trim().orEmpty()
+        val newPassword = binding.inputWifiPassword.text?.toString().orEmpty()
+        val wifiChanged = newSsid != originalSsid || newPassword != originalPassword
+
         settings.host = binding.inputHost.text?.toString()?.trim().orEmpty().ifBlank { "192.168.42.1" }
         settings.port = port
         settings.stitch = binding.spinnerStitch.selectedItem as String
@@ -83,8 +101,49 @@ class SettingsActivity : BaseActivity() {
         settings.compressQuality = (binding.spinnerQuality.selectedItem as String).toInt()
         settings.compressKeepOriginal = binding.switchKeepOriginal.isChecked
         settings.printOverlay = binding.switchPrintOverlay.isChecked
-        AppSettings.save(this, settings)
-        Toast.makeText(this, "Сохранено", Toast.LENGTH_SHORT).show()
-        finish()
+
+        if (!wifiChanged) {
+            settings.wifiSsid = originalSsid
+            settings.wifiPassword = originalPassword
+            AppSettings.save(this, settings)
+            Toast.makeText(this, "Сохранено", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        if (newSsid.isBlank() || newPassword.isBlank()) {
+            Toast.makeText(this, "SSID и пароль Wi‑Fi обязательны", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        binding.btnSave.isEnabled = false
+        Toast.makeText(this, R.string.wifi_status_connecting, Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    connectAndProbeCamera(
+                        this@SettingsActivity,
+                        newSsid,
+                        newPassword,
+                        settings.host,
+                        settings.port,
+                    )
+                }
+                settings.wifiSsid = newSsid
+                settings.wifiPassword = newPassword
+                AppSettings.save(this@SettingsActivity, settings)
+                Toast.makeText(this@SettingsActivity, "Сохранено (Wi‑Fi проверен)", Toast.LENGTH_SHORT).show()
+                finish()
+            } catch (e: Exception) {
+                // Остальные настройки сохраняем, SSID/пароль — нет
+                AppSettings.saveWithoutWifi(this@SettingsActivity, settings)
+                Toast.makeText(
+                    this@SettingsActivity,
+                    getString(R.string.wifi_credentials_verify_fail) + "\n${e.message}",
+                    Toast.LENGTH_LONG,
+                ).show()
+                binding.btnSave.isEnabled = true
+            }
+        }
     }
 }

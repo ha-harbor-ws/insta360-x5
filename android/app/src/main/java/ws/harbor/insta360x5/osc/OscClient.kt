@@ -1,5 +1,7 @@
 package ws.harbor.insta360x5.osc
 
+import android.net.Network
+import okhttp3.Dns
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -7,6 +9,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.net.InetAddress
 import java.util.concurrent.TimeUnit
 
 class OscException(message: String) : Exception(message)
@@ -23,14 +26,30 @@ data class CameraFile(
 class OscClient(
     private val host: String,
     private val port: Int,
+    private val network: Network? = null,
     timeoutSec: Long = 30,
 ) {
     private val base = "http://$host:$port"
     private val jsonType = "application/json;charset=utf-8".toMediaType()
-    private val client = OkHttpClient.Builder()
+    private val client: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(timeoutSec, TimeUnit.SECONDS)
         .readTimeout(timeoutSec, TimeUnit.SECONDS)
         .writeTimeout(timeoutSec, TimeUnit.SECONDS)
+        .apply {
+            if (network != null) {
+                // Только OSC-клиент: остальной трафик приложения/телефона не затрагивается
+                socketFactory(network.socketFactory)
+                dns(object : Dns {
+                    override fun lookup(hostname: String): List<InetAddress> {
+                        return try {
+                            network.getAllByName(hostname).toList()
+                        } catch (_: Exception) {
+                            listOf(InetAddress.getByName(hostname))
+                        }
+                    }
+                })
+            }
+        }
         .build()
 
     fun info(): JSONObject = getJson("/osc/info")
