@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import ws.harbor.insta360x5.R
@@ -14,7 +13,7 @@ import ws.harbor.insta360x5.databinding.ItemPhotoPageBinding
 import ws.harbor.insta360x5.util.GalleryPhoto
 import ws.harbor.insta360x5.util.PhotoStorage
 
-class PhotoViewActivity : AppCompatActivity() {
+class PhotoViewActivity : BaseActivity() {
     private lateinit var binding: ActivityPhotoViewBinding
     private lateinit var photos: List<GalleryPhoto>
 

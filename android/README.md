@@ -4,7 +4,7 @@
 
 - **minSdk:** 26 (Android 8.0)
 - **target/compileSdk:** 36 (Android 16)
-- **version:** 1.0.4
+- **version:** 1.0.5
 
 ## Возможности
 
@@ -20,7 +20,7 @@
 Скачать (постоянная ссылка latest):  
 https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
 
-Релиз: [v1.0.4](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.4)
+Релиз: [v1.0.5](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.5)
 
 Собрать заново:
 

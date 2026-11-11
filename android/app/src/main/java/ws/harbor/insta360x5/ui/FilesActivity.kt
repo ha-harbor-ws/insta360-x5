@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +24,7 @@ import ws.harbor.insta360x5.util.ImageCompressor
 import ws.harbor.insta360x5.util.PhotoStorage
 import java.io.File
 
-class FilesActivity : AppCompatActivity() {
+class FilesActivity : BaseActivity() {
     private lateinit var binding: ActivityFilesBinding
     private lateinit var settings: AppSettings
     private val adapter = FilesAdapter()

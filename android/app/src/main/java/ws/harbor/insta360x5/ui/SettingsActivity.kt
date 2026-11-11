@@ -3,11 +3,10 @@ package ws.harbor.insta360x5.ui
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import ws.harbor.insta360x5.data.AppSettings
 import ws.harbor.insta360x5.databinding.ActivitySettingsBinding
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
     private lateinit var binding: ActivitySettingsBinding
     private lateinit var settings: AppSettings
 

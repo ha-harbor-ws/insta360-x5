@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ws.harbor.insta360x5.databinding.ActivityPhotosBinding
@@ -15,7 +14,7 @@ import ws.harbor.insta360x5.util.GalleryPhoto
 import ws.harbor.insta360x5.util.MediaPermissions
 import ws.harbor.insta360x5.util.PhotoStorage
 
-class PhotosActivity : AppCompatActivity() {
+class PhotosActivity : BaseActivity() {
     private lateinit var binding: ActivityPhotosBinding
     private val adapter = PhotosAdapter { photo, index ->
         startActivity(

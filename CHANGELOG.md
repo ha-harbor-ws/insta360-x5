@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.5] — 2026-11-11
+
+### Android
+- Исправлено перекрытие контента зелёным ActionBar на Android 15+ (edge-to-edge / targetSdk 36)
+
 ## [1.0.4] — 2026-11-11
 
 ### Android
