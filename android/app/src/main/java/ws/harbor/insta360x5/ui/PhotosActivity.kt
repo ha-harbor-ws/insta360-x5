@@ -1,7 +1,7 @@
 package ws.harbor.insta360x5.ui
 
 import android.content.Intent
-import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,16 +11,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ws.harbor.insta360x5.databinding.ActivityPhotosBinding
 import ws.harbor.insta360x5.databinding.ItemPhotoBinding
+import ws.harbor.insta360x5.util.GalleryPhoto
+import ws.harbor.insta360x5.util.MediaPermissions
 import ws.harbor.insta360x5.util.PhotoStorage
-import java.io.File
 
 class PhotosActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhotosBinding
-    private val adapter = PhotosAdapter { file, index ->
+    private val adapter = PhotosAdapter { photo, index ->
         startActivity(
             Intent(this, PhotoViewActivity::class.java)
                 .putExtra(PhotoViewActivity.EXTRA_INDEX, index)
-                .putExtra(PhotoViewActivity.EXTRA_PATH, file.absolutePath),
+                .putExtra(PhotoViewActivity.EXTRA_URI, photo.uri.toString()),
         )
     }
 
@@ -33,19 +34,23 @@ class PhotosActivity : AppCompatActivity() {
 
         binding.photosGrid.layoutManager = GridLayoutManager(this, 2)
         binding.photosGrid.adapter = adapter
-
-        val highlight = intent.getStringExtra(EXTRA_HIGHLIGHT_PATH)
-        if (!highlight.isNullOrBlank()) {
-            // open viewer for just-downloaded file after first load
-            openHighlight = highlight
-        }
+        MediaPermissions.ensure(this)
     }
-
-    private var openHighlight: String? = null
 
     override fun onResume() {
         super.onResume()
         reload()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == MediaPermissions.REQUEST_CODE) {
+            reload()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -54,43 +59,24 @@ class PhotosActivity : AppCompatActivity() {
     }
 
     private fun reload() {
-        val files = PhotoStorage.listPhotos(this)
-        adapter.submit(files)
-        binding.photosStatus.text = if (files.isEmpty()) {
-            "Нет скачанных фото. Сделайте снимок или скачайте файлы с камеры."
+        val photos = PhotoStorage.listGalleryPhotos(this)
+        adapter.submit(photos)
+        binding.photosStatus.text = if (photos.isEmpty()) {
+            "Нет фото в галерее. Сделайте снимок или скачайте файлы с камеры."
         } else {
-            "Фото: ${files.size}"
+            "Фото в галерее: ${photos.size}"
         }
-
-        val path = openHighlight
-        if (path != null) {
-            openHighlight = null
-            val index = files.indexOfFirst { it.absolutePath == path }.coerceAtLeast(0)
-            if (files.isNotEmpty()) {
-                startActivity(
-                    Intent(this, PhotoViewActivity::class.java)
-                        .putExtra(PhotoViewActivity.EXTRA_INDEX, index)
-                        .putExtra(PhotoViewActivity.EXTRA_PATH, files[index].absolutePath),
-                )
-            } else {
-                Toast.makeText(this, "Файл не найден", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    companion object {
-        const val EXTRA_HIGHLIGHT_PATH = "highlight_path"
     }
 }
 
 private class PhotosAdapter(
-    private val onClick: (File, Int) -> Unit,
+    private val onClick: (GalleryPhoto, Int) -> Unit,
 ) : RecyclerView.Adapter<PhotosAdapter.VH>() {
-    private val items = mutableListOf<File>()
+    private val items = mutableListOf<GalleryPhoto>()
 
-    fun submit(files: List<File>) {
+    fun submit(photos: List<GalleryPhoto>) {
         items.clear()
-        items.addAll(files)
+        items.addAll(photos)
         notifyDataSetChanged()
     }
 
@@ -102,23 +88,12 @@ private class PhotosAdapter(
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        val file = items[position]
-        holder.binding.thumbName.text = file.name
-        val opts = BitmapFactory.Options().apply {
-            inJustDecodeBounds = true
-        }
-        BitmapFactory.decodeFile(file.absolutePath, opts)
-        var sample = 1
-        val maxSide = 512
-        var w = opts.outWidth
-        var h = opts.outHeight
-        while (w / (sample * 2) > maxSide || h / (sample * 2) > maxSide) {
-            sample *= 2
-        }
-        val decode = BitmapFactory.Options().apply { inSampleSize = sample }
-        val bmp = BitmapFactory.decodeFile(file.absolutePath, decode)
-        holder.binding.thumbImage.setImageBitmap(bmp)
-        holder.itemView.setOnClickListener { onClick(file, position) }
+        val photo = items[position]
+        holder.binding.thumbName.text = photo.name
+        holder.binding.thumbImage.setImageBitmap(
+            PhotoStorage.decodeUriBounds(holder.itemView.context, photo.uri, 512),
+        )
+        holder.itemView.setOnClickListener { onClick(photo, position) }
     }
 
     class VH(val binding: ItemPhotoBinding) : RecyclerView.ViewHolder(binding.root)

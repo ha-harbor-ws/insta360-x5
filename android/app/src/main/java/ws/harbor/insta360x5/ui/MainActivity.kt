@@ -1,7 +1,9 @@
 package ws.harbor.insta360x5.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -13,6 +15,7 @@ import kotlinx.coroutines.withContext
 import ws.harbor.insta360x5.R
 import ws.harbor.insta360x5.data.AppSettings
 import ws.harbor.insta360x5.databinding.ActivityMainBinding
+import ws.harbor.insta360x5.databinding.DialogWellNumberBinding
 import ws.harbor.insta360x5.osc.OscClient
 import ws.harbor.insta360x5.osc.OscException
 import ws.harbor.insta360x5.util.ImageCompressor
@@ -32,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         title = "Insta360 X5"
 
-        binding.btnTakePhoto.setOnClickListener { takePhoto() }
+        binding.btnTakePhoto.setOnClickListener { askWellNumberAndCapture() }
         binding.btnCameraInfo.setOnClickListener { showInfo() }
         binding.btnFiles.setOnClickListener {
             startActivity(Intent(this, FilesActivity::class.java))
@@ -60,21 +63,40 @@ class MainActivity : AppCompatActivity() {
         binding.btnSettings.isEnabled = !busy
     }
 
-    private fun appendLog(line: String) {
+    private fun setLog(text: String) {
         val stamp = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
-        val current = binding.logView.text?.toString().orEmpty()
-        binding.logView.text = if (current.isBlank()) {
-            "[$stamp] $line"
-        } else {
-            "$current\n[$stamp] $line"
-        }
+        binding.logView.text = "[$stamp] $text"
     }
 
     private fun client() = OscClient(settings.host, settings.port)
 
-    private fun takePhoto() {
+    private fun askWellNumberAndCapture() {
+        val dialogBinding = DialogWellNumberBinding.inflate(LayoutInflater.from(this))
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.well_number)
+            .setView(dialogBinding.root)
+            .setPositiveButton(R.string.ok, null)
+            .setNegativeButton(R.string.cancel, null)
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val raw = dialogBinding.inputWellNumber.text?.toString().orEmpty()
+                val base = PhotoStorage.sanitizeFileBase(raw)
+                if (raw.isBlank()) {
+                    dialogBinding.inputWellNumber.error = getString(R.string.well_number_required)
+                    return@setOnClickListener
+                }
+                dialog.dismiss()
+                takePhoto(base)
+            }
+        }
+        dialog.show()
+    }
+
+    private fun takePhoto(wellName: String) {
         setBusy(true)
-        appendLog("Снимок…")
+        setLog("Снимок… колодец=$wellName")
         lifecycleScope.launch {
             try {
                 val saved = withContext(Dispatchers.IO) {
@@ -86,19 +108,40 @@ class MainActivity : AppCompatActivity() {
                         throw OscException("Проблема с картой памяти: $card")
                     }
                     withContext(Dispatchers.Main) {
-                        appendLog(
+                        setLog(
                             "Модель: ${info.optString("model")} | карта: $card | " +
-                                "батарея: ${state?.optDouble("batteryLevel", -1.0)}",
+                                "батарея: ${state?.optDouble("batteryLevel", -1.0)}\nСнимок…",
                         )
                     }
                     val urls = cam.takePicture(settings.stitch, settings.hdr)
-                    val out = mutableListOf<File>()
+                    val out = mutableListOf<Uri>()
                     if (settings.download) {
-                        for (url in urls) {
-                            val name = url.trimEnd('/').substringAfterLast('/')
-                            val dest = File(PhotoStorage.photosDir(this@MainActivity), name)
-                            cam.downloadToFile(url, dest)
-                            out += ImageCompressor.maybeCompress(dest, settings)
+                        urls.forEachIndexed { index, url ->
+                            val cacheName = if (urls.size == 1) {
+                                "$wellName.jpg"
+                            } else {
+                                "${wellName}_${index + 1}.jpg"
+                            }
+                            val temp = File(PhotoStorage.cacheDir(this@MainActivity), cacheName)
+                            cam.downloadToFile(url, temp)
+                            val processed = ImageCompressor.maybeCompress(temp, settings)
+                            val galleryName = if (processed.extension.isBlank()) {
+                                "$wellName.jpg"
+                            } else if (urls.size == 1) {
+                                "$wellName.${processed.extension}"
+                            } else {
+                                "${wellName}_${index + 1}.${processed.extension}"
+                            }
+                            val uri = PhotoStorage.saveFileToGallery(
+                                this@MainActivity,
+                                processed,
+                                galleryName,
+                            )
+                            out += uri
+                            if (temp.exists()) temp.delete()
+                            if (processed.exists() && processed.absolutePath != temp.absolutePath) {
+                                processed.delete()
+                            }
                         }
                         if (settings.deleteAfterDownload && out.isNotEmpty()) {
                             cam.deleteFiles(urls)
@@ -106,17 +149,17 @@ class MainActivity : AppCompatActivity() {
                     }
                     out to urls
                 }
-                val (files, urls) = saved
-                if (files.isEmpty()) {
-                    appendLog("Снимок готов на камере:\n" + urls.joinToString("\n"))
+                val (uris, urls) = saved
+                if (uris.isEmpty()) {
+                    setLog("Снимок готов на камере:\n" + urls.joinToString("\n"))
                     Toast.makeText(this@MainActivity, "Снимок на камере", Toast.LENGTH_SHORT).show()
                 } else {
-                    appendLog("Сохранено:\n" + files.joinToString("\n") { it.absolutePath })
-                    Toast.makeText(this@MainActivity, "Готово: ${files.size} файл(ов)", Toast.LENGTH_SHORT).show()
-                    offerOpenGallery(files.first())
+                    setLog("Сохранено в галерею:\n" + uris.joinToString("\n") { it.toString() })
+                    Toast.makeText(this@MainActivity, "Сохранено в галерею: ${uris.size}", Toast.LENGTH_SHORT).show()
+                    offerOpenGallery()
                 }
             } catch (e: Exception) {
-                appendLog("Ошибка: ${e.message}")
+                setLog("Ошибка: ${e.message}")
                 Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
             } finally {
                 setBusy(false)
@@ -124,14 +167,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun offerOpenGallery(firstFile: File) {
+    private fun offerOpenGallery() {
         AlertDialog.Builder(this)
             .setMessage("Открыть скачанные фото?")
             .setPositiveButton(R.string.open_gallery) { _, _ ->
-                startActivity(
-                    Intent(this, PhotosActivity::class.java)
-                        .putExtra(PhotosActivity.EXTRA_HIGHLIGHT_PATH, firstFile.absolutePath),
-                )
+                startActivity(Intent(this, PhotosActivity::class.java))
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
@@ -158,9 +198,9 @@ class MainActivity : AppCompatActivity() {
                         appendLine("Storage: ${state?.optString("storageUri")}")
                     }
                 }
-                appendLog(text.trim())
+                setLog(text.trim())
             } catch (e: Exception) {
-                appendLog("Ошибка: ${e.message}")
+                setLog("Ошибка: ${e.message}")
                 Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
             } finally {
                 setBusy(false)

@@ -10,8 +10,8 @@ data class AppSettings(
     var hdr: String = "off",
     var download: Boolean = true,
     var deleteAfterDownload: Boolean = false,
-    var compress: Boolean = false,
-    var compressResolution: String = "4k",
+    var compress: Boolean = true,
+    var compressResolution: String = "1080",
     var compressQuality: Int = 85,
     var compressKeepOriginal: Boolean = false,
 ) {
@@ -52,8 +52,8 @@ data class AppSettings(
                 hdr = p.getString("hdr", "off") ?: "off",
                 download = p.getBoolean("download", true),
                 deleteAfterDownload = p.getBoolean("deleteAfterDownload", false),
-                compress = p.getBoolean("compress", false),
-                compressResolution = p.getString("compressResolution", "4k") ?: "4k",
+                compress = p.getBoolean("compress", true),
+                compressResolution = p.getString("compressResolution", "1080") ?: "1080",
                 compressQuality = p.getInt("compressQuality", 85),
                 compressKeepOriginal = p.getBoolean("compressKeepOriginal", false),
             )

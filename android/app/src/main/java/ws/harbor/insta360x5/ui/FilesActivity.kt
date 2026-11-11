@@ -1,6 +1,7 @@
 package ws.harbor.insta360x5.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -92,28 +93,35 @@ class FilesActivity : AppCompatActivity() {
             try {
                 val saved = withContext(Dispatchers.IO) {
                     val cam = client()
-                    val out = mutableListOf<File>()
+                    val out = mutableListOf<Uri>()
                     val urls = selected.map { it.fileUrl }
                     for (file in selected) {
-                        val dest = File(PhotoStorage.photosDir(this@FilesActivity), file.name)
-                        cam.downloadToFile(file.fileUrl, dest)
-                        out += ImageCompressor.maybeCompress(dest, settings)
+                        val temp = File(PhotoStorage.cacheDir(this@FilesActivity), file.name)
+                        cam.downloadToFile(file.fileUrl, temp)
+                        val processed = ImageCompressor.maybeCompress(temp, settings)
+                        val uri = PhotoStorage.saveFileToGallery(
+                            this@FilesActivity,
+                            processed,
+                            processed.name,
+                        )
+                        out += uri
+                        if (temp.exists()) temp.delete()
+                        if (processed.exists() && processed.absolutePath != temp.absolutePath) {
+                            processed.delete()
+                        }
                     }
                     if (settings.deleteAfterDownload) {
                         cam.deleteFiles(urls)
                     }
                     out
                 }
-                Toast.makeText(this@FilesActivity, "Скачано: ${saved.size}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@FilesActivity, "В галерею: ${saved.size}", Toast.LENGTH_SHORT).show()
                 if (settings.deleteAfterDownload) refresh()
                 if (saved.isNotEmpty()) {
                     AlertDialog.Builder(this@FilesActivity)
                         .setMessage("Открыть скачанные фото?")
                         .setPositiveButton(R.string.open_gallery) { _, _ ->
-                            startActivity(
-                                Intent(this@FilesActivity, PhotosActivity::class.java)
-                                    .putExtra(PhotosActivity.EXTRA_HIGHLIGHT_PATH, saved.first().absolutePath),
-                            )
+                            startActivity(Intent(this@FilesActivity, PhotosActivity::class.java))
                         }
                         .setNegativeButton(R.string.cancel, null)
                         .show()

@@ -43,6 +43,13 @@
         <item name="android:textColor">@color/accent</item>
     </style>
 
+    <style name="Widget.Insta360X5.Button.Round" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/accent</item>
+        <item name="cornerRadius">84dp</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
     <style name="TextAppearance.Insta360X5.Body" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:textColor">@color/text_primary</item>
     </style>
