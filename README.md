@@ -7,7 +7,7 @@
 - **`android/`** — приложение для телефона (APK)
 - **`CHANGELOG.md`** — история изменений
 
-**Актуальный релиз:** [v1.0.2](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.2)
+**Актуальный релиз:** [v1.0.3](https://github.com/ha-harbor-ws/insta360-x5/releases/tag/v1.0.3)
 
 IP камеры в режиме AP: **`192.168.42.1`** (пароль Wi‑Fi обычно `88888888`).
 
@@ -63,7 +63,7 @@ python take_photo.py --once --delete-after-download
 ## Android
 
 - **minSdk 26** (Android 8.0) … **targetSdk 36** (Android 16)
-- Версия приложения: **1.0.2**
+- Версия приложения: **1.0.3**
 
 **Скачать APK (latest):**  
 https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-debug.apk
@@ -77,7 +77,7 @@ https://github.com/ha-harbor-ws/insta360-x5/releases/latest/download/Insta360X5-
 3. **Файлы на камере** — список, скачать в галерею, удалить, открыть галерею приложения
 4. **Скачанные фото** — сетка и полноэкранный просмотр; номер колодца из имени файла; «Поделиться»
 5. **Настройки** — host, stitch, HDR, скачивание, удаление после скачивания, сжатие  
-   Под кнопкой показывается сводка текущих настроек
+   Под кнопкой: подсказка Wi‑Fi камеры, затем сводка текущих настроек
 
 По умолчанию сжатие: разрешение **1080**.
 
@@ -97,6 +97,9 @@ APK: `android/app/build/outputs/apk/debug/app-debug.apk`
 ## Changelog
 
 Полный список изменений: [CHANGELOG.md](./CHANGELOG.md)
+
+### 1.0.3
+- Подсказка Wi‑Fi под «Настройки»; больший отступ до кнопки снимка
 
 ### 1.0.2
 - В просмотре фото: номер колодца из имени файла
